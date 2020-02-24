@@ -80,6 +80,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="IntervalNext_Cls.vb" />
+    <Compile Include="MPSETSaveLoad.vb" />
     <Compile Include="MenuFileAccessHistory.vb" />
     <Compile Include="MenuFileAccessHistoryTest.Designer.vb">
       <DependentUpon>MenuFileAccessHistoryTest.vb</DependentUpon>

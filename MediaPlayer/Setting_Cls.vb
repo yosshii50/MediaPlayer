@@ -13,12 +13,12 @@ Public Class Setting_Cls
         End Set
     End Property
 
-    Private _ViewTime As Integer
-    Public Property ViewTime() As Integer
+    Private _ViewTime As Decimal
+    Public Property ViewTime() As Decimal
         Get
             Return _ViewTime
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As Decimal)
             _ViewTime = value
         End Set
     End Property

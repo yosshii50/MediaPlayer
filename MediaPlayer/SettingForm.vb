@@ -16,6 +16,7 @@ Public Class SettingForm
         TextBox2.Text = BaseSetting.ViewTime.ToString
 
         RetCode = False
+
         Me.ShowDialog()
 
         Return RetCode
@@ -24,13 +25,19 @@ Public Class SettingForm
     Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
 
         BaseSetting.FileName = TextBox1.Text
-        BaseSetting.ViewTime = CInt(TextBox2.Text)
+        BaseSetting.ViewTime = CDec(TextBox2.Text)
 
         RetCode = True
         Me.Dispose()
     End Sub
+
+    'キャンセル
+    Private Sub CancelBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CancelBtn.Click
+        Me.Dispose()
+    End Sub
+
     'ファイル変更
-    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+    Private Sub Button3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button3.Click
 
         Dim WrkFileName As String = TextBox1.Text
         If OpenFile(WrkFileName) = True Then
@@ -68,6 +75,5 @@ Public Class SettingForm
 
         Return False
     End Function
-
 
 End Class

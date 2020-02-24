@@ -5,7 +5,7 @@ Public Class IntervalNext_Cls
 
     Dim WithEvents IntTimer As New Timer
 
-    Public Sub StartInt(ByVal SetInterval As Integer, ByVal RunSub As TickSub)
+    Public Sub StartInt(ByVal SetInterval As Decimal, ByVal RunSub As TickSub)
 
         If SetInterval = 0 Then
             Call StopInt()
@@ -13,7 +13,7 @@ Public Class IntervalNext_Cls
         End If
 
         SetSub = RunSub
-        IntTimer.Interval = SetInterval * 1000
+        IntTimer.Interval = CInt(SetInterval * 1000)
         IntTimer.Enabled = True
     End Sub
 

@@ -128,137 +128,44 @@ Public Class Form1
     End Sub
 
     '設定保存
-    Private LastSettingFileName As String
     Private Sub MenuSave_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuSave.Click
 
-        'ファイル保存のダイアログ
-        With New SaveFileDialog()
+        Dim RetStr As String = MPSETSaveLoad.Save()
 
-            .FileName = System.IO.Path.GetFileName(LastSettingFileName)
-            If LastSettingFileName <> "" Then
-                .InitialDirectory = System.IO.Path.GetDirectoryName(LastSettingFileName)
-            End If
-            .Filter = "設定ファイル(*.mpset)|*.mpset|すべてのファイル(*.*)|*.*"
-            .FilterIndex = 1
-            '.Title = "開くファイルを選択してください"
-            ''ダイアログボックスを閉じる前に現在のディレクトリを復元するようにする
-            'ofd.RestoreDirectory = True
+        If RetStr <> "" Then
 
-            'ダイアログを表示する
-            If .ShowDialog() = DialogResult.OK Then
-                'OKボタンがクリックされたとき、選択されたファイル名を表示する
+            '履歴の追加
+            Call WrkMenuFileAccessHistory.AddHistory(MenuLoad, RetStr)
 
-                LastSettingFileName = .FileName
+            'メニューの履歴を保存
+            Call FileLogSave()
 
-                '履歴の追加
-                Call WrkMenuFileAccessHistory.AddHistory(MenuLoad, LastSettingFileName)
+            '設定情報を保存
+            Call MPSETSaveLoad.SaveMPSET(Me, RetStr)
 
-                'メニューの履歴を保存
-                Call FileLogSave()
-
-                '設定情報を保存
-                Call SaveMPSET(LastSettingFileName)
-
-            End If
-
-        End With
+        End If
 
     End Sub
-    Private Sub SaveMPSET(ByVal WrkFileName As String)
-
-        Dim SaveStr As String = ""
-
-        SaveStr = SaveStr & "MainSizeWidth" & vbTab & Me.Width & vbCrLf
-        SaveStr = SaveStr & "MainSizeHeight" & vbTab & Me.Height & vbCrLf
-        SaveStr = SaveStr & SaveMPSETAll(Me)
-
-        Dim WrkStreamWriter As System.IO.StreamWriter
-
-        Try
-            WrkStreamWriter = New System.IO.StreamWriter(WrkFileName, False, System.Text.Encoding.GetEncoding("Shift_JIS"))
-            WrkStreamWriter.WriteLine(SaveStr)
-            WrkStreamWriter.Close()
-        Catch ex As System.IO.FileNotFoundException
-        Catch ex As Exception
-            MsgBox(ex.ToString)
-            MsgBox("設定保存に失敗しました。")
-        End Try
-
-    End Sub
-    Private Function SaveMPSETAll(ByVal BaseControl As Control) As String
-
-        Dim SaveStr As String = ""
-
-        For Each WrkControl As Control In BaseControl.Controls
-
-            'Debug.WriteLine(TypeName(WrkControl))
-
-            If TypeOf WrkControl Is ViewSet Then
-                SaveStr = SaveStr & SaveMPSETSingle(DirectCast(WrkControl, ViewSet))
-            End If
-
-            If TypeOf WrkControl Is SplitterPanel _
-            Or TypeOf WrkControl Is MultiContainer Then
-
-                If TypeOf WrkControl Is MultiContainer Then
-
-                    Dim WrkMultiContainer As MultiContainer = DirectCast(WrkControl, MultiContainer)
-
-                    SaveStr = SaveStr & "MultiContainer" & vbTab
-                    If WrkMultiContainer.Orientation = Orientation.Vertical Then
-                        SaveStr = SaveStr & "Vertical" & vbTab
-                    Else
-                        SaveStr = SaveStr & "Horizontal" & vbTab
-                    End If
-                    SaveStr = SaveStr & WrkMultiContainer.SplitterDistance & vbCrLf
-
-                End If
-
-                '再帰的呼び出し
-                SaveStr = SaveStr & SaveMPSETAll(WrkControl)
-
-            End If
-
-        Next
-
-        Return SaveStr
-    End Function
-    Private Function SaveMPSETSingle(ByVal WrkViewSet As ViewSet) As String
-        Return "ViewSet" & vbTab & WrkViewSet.Setting_Obj.ViewTime & vbTab & WrkViewSet.Setting_Obj.FileName & vbCrLf
-    End Function
 
     '設定読込/ファイル選択
     Private Sub MenuLoadSelect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuLoadSelect.Click
 
-        'ファイル読込のダイアログ
-        With New OpenFileDialog()
+        Dim RetStr As String = MPSETSaveLoad.LoadSelect()
 
-            .FileName = System.IO.Path.GetFileName(LastSettingFileName)
-            If LastSettingFileName <> "" Then
-                .InitialDirectory = System.IO.Path.GetDirectoryName(LastSettingFileName)
-            End If
-            .Filter = "設定ファイル(*.mpset)|*.mpset|すべてのファイル(*.*)|*.*"
-            .FilterIndex = 1
-            '.Title = "開くファイルを選択してください"
-            ''ダイアログボックスを閉じる前に現在のディレクトリを復元するようにする
-            'ofd.RestoreDirectory = True
+        If RetStr <> "" Then
 
-            'ダイアログを表示する
-            If .ShowDialog() = DialogResult.OK Then
-                'OKボタンがクリックされたとき、選択されたファイル名を表示する
+            '履歴の追加
+            Call WrkMenuFileAccessHistory.AddHistory(MenuLoad, RetStr)
 
-                LastSettingFileName = .FileName
+            'メニューの履歴を保存
+            Call FileLogSave()
 
-                '履歴の追加
-                Call WrkMenuFileAccessHistory.AddHistory(MenuLoad, LastSettingFileName)
+            Call MPSETSaveLoad.LoadMPSET(Me, AddressOf MenuNew_Clear, AddressOf Separate, RetStr)
 
-                Call LoadMPSET(LastSettingFileName)
-
-            End If
-
-        End With
+        End If
 
     End Sub
+
     '履歴選択時の処理
     Private Sub MenuLoadHistory_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
@@ -267,94 +174,10 @@ Public Class Form1
 
         Call WrkMenuFileAccessHistory.AddHistory(MenuLoad, WrkToolStripMenuItem.Text)
 
-        Call LoadMPSET(WrkToolStripMenuItem.Text)
+        'メニューの履歴を保存
+        Call FileLogSave()
 
-    End Sub
-    Private Sub LoadMPSET(ByVal FileName As String)
-
-        '現在の設定を削除
-        Dim BaseControl As Control = MenuNew_Clear(Me, Me)
-
-        '設定読込
-        Dim WrkStr As String = ""
-        Try
-            WrkStr = System.IO.File.ReadAllText(FileName, System.Text.Encoding.GetEncoding("Shift_JIS"))
-        Catch ex As Exception
-            MsgBox(ex.ToString)
-            MsgBox("設定読込に失敗しました。")
-            Exit Sub
-        End Try
-
-        Dim SettingList() As String = Split(WrkStr, vbCrLf)
-        For SettingIdx As Integer = 0 To SettingList.Count - 1
-            SettingIdx = LoadMPSETCall(SettingList, SettingIdx, BaseControl)
-        Next
-
-    End Sub
-    Private Function LoadMPSETCall(ByVal SettingList() As String, ByVal SettingIdx As Integer, ByVal BaseControl As Control) As Integer
-
-        If SettingList(SettingIdx) = "" Then
-            Return SettingIdx
-        End If
-
-        Dim SettingSingle() As String = Split(SettingList(SettingIdx), vbTab)
-
-        If SettingSingle(0) = "MultiContainer" Then
-
-            Dim WrkMultiContainer As MultiContainer
-
-            If SettingSingle(1) = "Horizontal" Then
-                WrkMultiContainer = Separate(BaseControl, True)
-            Else
-                WrkMultiContainer = Separate(BaseControl, False)
-            End If
-
-            WrkMultiContainer.SplitterDistance = CInt(SettingSingle(2))
-
-            For Each WrkControl As Control In WrkMultiContainer.Panel1.Controls
-                If TypeOf WrkControl Is ViewSet Then
-                    SettingIdx = LoadMPSETCall(SettingList, SettingIdx + 1, WrkControl)
-                    Exit For
-                End If
-            Next
-            For Each WrkControl As Control In WrkMultiContainer.Panel2.Controls
-                If TypeOf WrkControl Is ViewSet Then
-                    SettingIdx = LoadMPSETCall(SettingList, SettingIdx + 1, WrkControl)
-                    Exit For
-                End If
-            Next
-
-        End If
-
-        If SettingSingle(0) = "ViewSet" Then
-
-            Call LoadMPSETViewSet(BaseControl, SettingSingle(1), SettingSingle(2))
-
-        End If
-
-        If SettingSingle(0) = "MainSizeWidth" Then
-            Me.Width = CInt(SettingSingle(1))
-        End If
-
-        If SettingSingle(0) = "MainSizeHeight" Then
-            Me.Height = CInt(SettingSingle(1))
-        End If
-
-        Return SettingIdx
-    End Function
-    Private Sub LoadMPSETViewSet(ByVal BaseControl As Control, ByVal SetViewTime As String, ByVal SetFileName As String)
-
-        If TypeOf BaseControl Is ViewSet Then
-            Dim WrkViewSet As ViewSet = DirectCast(BaseControl, ViewSet)
-
-            WrkViewSet.Setting_Obj.FileName = SetFileName
-
-            Dim WrkViewTime As Integer
-            WrkViewTime = CInt(SetViewTime)
-            WrkViewSet.Setting_Obj.ViewTime = WrkViewTime
-
-            Call WrkViewSet.ReView()
-        End If
+        Call MPSETSaveLoad.LoadMPSET(Me, AddressOf MenuNew_Clear, AddressOf Separate, WrkToolStripMenuItem.Text)
 
     End Sub
 
@@ -418,36 +241,31 @@ Public Class Form1
     Private Sub MenuNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuNew.Click
 
         '現在の設定を削除
-        Call MenuNew_Clear(Me, Me)
+        Call MenuNew_Clear()
 
     End Sub
-    Private Function MenuNew_Clear(ByVal RootControl As Control, ByVal BaseControl As Control) As Control
+    Private Function MenuNew_Clear() As Control
 
-        For Each WrkControl As Control In BaseControl.Controls
+        For Each WrkControl As Control In Me.Controls
 
             'Debug.WriteLine(TypeName(WrkControl))
 
             If TypeOf WrkControl Is ViewSet Then
-                RootControl.Controls.Add(WrkControl)
-                Return WrkControl
+                WrkControl.Dispose()
             End If
 
-            If TypeOf WrkControl Is SplitterPanel _
-            Or TypeOf WrkControl Is MultiContainer Then
-
-                '再帰的呼び出し
-                Dim RetControl As Control = MenuNew_Clear(RootControl, WrkControl)
-
-                If TypeOf WrkControl Is MultiContainer Then
-                    WrkControl.Dispose()
-                End If
-
-                Return RetControl
+            If TypeOf WrkControl Is MultiContainer Then
+                WrkControl.Dispose()
             End If
 
         Next
 
-        Return Nothing
+        Dim WrkPicBox As New ViewSet
+        WrkPicBox.ContextMenuStrip = ContextMenuStripPublic
+        Me.Controls.Add(WrkPicBox)
+        Call WrkPicBox.ReView()
+
+        Return WrkPicBox
     End Function
 
     '終了
