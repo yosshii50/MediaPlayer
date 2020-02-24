@@ -5,7 +5,7 @@ Public Class ViewSet
     Inherits ViewPicture
 
     Private IntervalNext_Obj As New IntervalNext_Cls
-    Private Setting_Obj As New Setting_Cls
+    Public Setting_Obj As New Setting_Cls
 
     Public Sub SettingCopy(ByVal BaseViewSet As ViewSet)
         Me.Setting_Obj.FileName = BaseViewSet.Setting_Obj.FileName
@@ -49,12 +49,33 @@ Public Class ViewSet
             Exit Sub
         End If
 
-        Me.LoadFile(FileList(FileIdx))
+        Dim RetCode As Boolean
+        RetCode = Me.LoadFile(FileList(FileIdx))
 
         If FileList.Count - 1 = FileIdx Then
+            '最後の画像を表示した場合
+
+            '最初に戻る
             FileIdx = 0
+
         Else
+
+            '次の画像を表示
             FileIdx = FileIdx + 1
+
+        End If
+
+        If RetCode = False Then
+            '画像の表示でエラーが発生した場合
+
+            If FileList.Count > 1 Then
+                '表示する画像が２個以上ある場合
+
+                '次の画像を表示
+                Call ExecSub()
+
+            End If
+
         End If
 
     End Sub

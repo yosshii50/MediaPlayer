@@ -34,8 +34,8 @@ Public Class MultiContainer
         End If
 
         '保持側のコントロールを親コントロールに移動
-        For Each WrkCont As Control In RetentionSideSplitterPanel.Controls
-            BaseControl.Controls.Add(WrkCont)
+        For Each WrkControl As Control In RetentionSideSplitterPanel.Controls
+            BaseControl.Controls.Add(WrkControl)
         Next
 
         '自分自身を削除

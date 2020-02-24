@@ -27,19 +27,23 @@ Public Class ViewPicture
         RemoveHandler Me.SizeChanged, AddressOf PicBox_SizeChanged
     End Sub
 
-    Public Sub LoadFile(ByVal SetViewFileName As String)
-        Call LoadFile(SetViewFileName, True)
-    End Sub
-    Public Sub LoadFile(ByVal SetViewFileName As String, ByVal IsAutoRefresh As Boolean)
+    Public Function LoadFile(ByVal SetViewFileName As String) As Boolean
+        Return LoadFile(SetViewFileName, True)
+    End Function
+    Public Function LoadFile(ByVal SetViewFileName As String, ByVal IsAutoRefresh As Boolean) As Boolean
 
         If SetViewFileName Is Nothing Then
-            Exit Sub
+            Return True
         End If
 
         _NowFileName = SetViewFileName
 
         'Bitmapオブジェクトの作成
-        LoadImage = New Bitmap(_NowFileName)
+        Try
+            LoadImage = New Bitmap(_NowFileName)
+        Catch ex As Exception
+            Return False
+        End Try
 
         Call ViewPix()
 
@@ -49,7 +53,9 @@ Public Class ViewPicture
 
         Call SizeChangedStop()
         Call SizeChangedStart()
-    End Sub
+
+        Return True
+    End Function
 
     Private Sub PicBox_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs)
         Call ViewPix()

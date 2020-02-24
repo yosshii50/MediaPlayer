@@ -38,15 +38,17 @@ Partial Class Form1
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripSeparator()
         Me.MenuExit = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewSet1 = New MediaPlayer.ViewSet()
+        Me.MenuNew = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ContextMenuStripPublic.SuspendLayout()
         CType(Me.ViewSet1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'ContextMenuStripPublic
         '
-        Me.ContextMenuStripPublic.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuSettings, Me.MenuVertical, Me.MenuHorizontal, Me.MenuDelete, Me.ToolStripMenuItem1, Me.MenuMaxView, Me.MenuSp, Me.ToolStripMenuItem2, Me.MenuSave, Me.MenuLoad, Me.MenuExit})
+        Me.ContextMenuStripPublic.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuSettings, Me.MenuVertical, Me.MenuHorizontal, Me.MenuDelete, Me.ToolStripMenuItem1, Me.MenuMaxView, Me.MenuSp, Me.ToolStripMenuItem2, Me.MenuSave, Me.MenuLoad, Me.MenuNew, Me.ToolStripMenuItem4, Me.MenuExit})
         Me.ContextMenuStripPublic.Name = "ContextMenuStripPublic"
-        Me.ContextMenuStripPublic.Size = New System.Drawing.Size(153, 236)
+        Me.ContextMenuStripPublic.Size = New System.Drawing.Size(153, 264)
         '
         'MenuSettings
         '
@@ -137,6 +139,17 @@ Partial Class Form1
         Me.ViewSet1.TabIndex = 1
         Me.ViewSet1.TabStop = False
         '
+        'MenuNew
+        '
+        Me.MenuNew.Name = "MenuNew"
+        Me.MenuNew.Size = New System.Drawing.Size(152, 22)
+        Me.MenuNew.Text = "新規"
+        '
+        'ToolStripMenuItem4
+        '
+        Me.ToolStripMenuItem4.Name = "ToolStripMenuItem4"
+        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(149, 6)
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
@@ -165,5 +178,7 @@ Partial Class Form1
     Friend WithEvents MenuLoad As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuLoadSelect As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem3 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents MenuNew As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem4 As System.Windows.Forms.ToolStripSeparator
 
 End Class

@@ -34,7 +34,7 @@ Public Class Form1
         Call Separate(ContextMenuStripBaseControl, True)
     End Sub
     '画面分割
-    Private Sub Separate(ByVal BaseControl As Control, ByVal IsHorizontal As Boolean)
+    Private Function Separate(ByVal BaseControl As Control, ByVal IsHorizontal As Boolean) As MultiContainer
 
         '新しいコンテナを追加
         Dim NewContainer As New MultiContainer(BaseControl.Parent, IsHorizontal)
@@ -50,7 +50,8 @@ Public Class Form1
         NewContainer.Panel2.Controls.Add(WrkPicBox)
         Call WrkPicBox.ReView()
 
-    End Sub
+        Return NewContainer
+    End Function
 
     '削除
     Private Sub MenuDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuDelete.Click
@@ -130,10 +131,6 @@ Public Class Form1
     Private LastSettingFileName As String
     Private Sub MenuSave_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuSave.Click
 
-        Debug.WriteLine("--------------------")
-        Call SaveMPSET(LastSettingFileName)
-        Exit Sub
-
         'ファイル保存のダイアログ
         With New SaveFileDialog()
 
@@ -167,12 +164,25 @@ Public Class Form1
         End With
 
     End Sub
-    Private Sub SaveMPSET(ByVal FileName As String)
+    Private Sub SaveMPSET(ByVal WrkFileName As String)
 
-        Dim SaveStr As String
-        SaveStr = SaveMPSETAll(Me)
+        Dim SaveStr As String = ""
 
-        MsgBox(FileName & vbCrLf & SaveStr)
+        SaveStr = SaveStr & "MainSizeWidth" & vbTab & Me.Width & vbCrLf
+        SaveStr = SaveStr & "MainSizeHeight" & vbTab & Me.Height & vbCrLf
+        SaveStr = SaveStr & SaveMPSETAll(Me)
+
+        Dim WrkStreamWriter As System.IO.StreamWriter
+
+        Try
+            WrkStreamWriter = New System.IO.StreamWriter(WrkFileName, False, System.Text.Encoding.GetEncoding("Shift_JIS"))
+            WrkStreamWriter.WriteLine(SaveStr)
+            WrkStreamWriter.Close()
+        Catch ex As System.IO.FileNotFoundException
+        Catch ex As Exception
+            MsgBox(ex.ToString)
+            MsgBox("設定保存に失敗しました。")
+        End Try
 
     End Sub
     Private Function SaveMPSETAll(ByVal BaseControl As Control) As String
@@ -181,14 +191,28 @@ Public Class Form1
 
         For Each WrkControl As Control In BaseControl.Controls
 
-            Debug.WriteLine(TypeName(WrkControl))
+            'Debug.WriteLine(TypeName(WrkControl))
 
-            If TypeOf WrkControl Is ViewPicture Then
-                SaveStr = SaveStr & SaveMPSETSingle(DirectCast(WrkControl, ViewPicture))
+            If TypeOf WrkControl Is ViewSet Then
+                SaveStr = SaveStr & SaveMPSETSingle(DirectCast(WrkControl, ViewSet))
             End If
 
             If TypeOf WrkControl Is SplitterPanel _
             Or TypeOf WrkControl Is MultiContainer Then
+
+                If TypeOf WrkControl Is MultiContainer Then
+
+                    Dim WrkMultiContainer As MultiContainer = DirectCast(WrkControl, MultiContainer)
+
+                    SaveStr = SaveStr & "MultiContainer" & vbTab
+                    If WrkMultiContainer.Orientation = Orientation.Vertical Then
+                        SaveStr = SaveStr & "Vertical" & vbTab
+                    Else
+                        SaveStr = SaveStr & "Horizontal" & vbTab
+                    End If
+                    SaveStr = SaveStr & WrkMultiContainer.SplitterDistance & vbCrLf
+
+                End If
 
                 '再帰的呼び出し
                 SaveStr = SaveStr & SaveMPSETAll(WrkControl)
@@ -199,14 +223,9 @@ Public Class Form1
 
         Return SaveStr
     End Function
-    Private Function SaveMPSETSingle(ByVal WrkViewPicture As ViewPicture) As String
-
-
-
-
-        Return WrkViewPicture.NowFileName & vbCrLf
+    Private Function SaveMPSETSingle(ByVal WrkViewSet As ViewSet) As String
+        Return "ViewSet" & vbTab & WrkViewSet.Setting_Obj.ViewTime & vbTab & WrkViewSet.Setting_Obj.FileName & vbCrLf
     End Function
-
 
     '設定読込/ファイル選択
     Private Sub MenuLoadSelect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuLoadSelect.Click
@@ -253,7 +272,89 @@ Public Class Form1
     End Sub
     Private Sub LoadMPSET(ByVal FileName As String)
 
-        MsgBox(FileName)
+        '現在の設定を削除
+        Dim BaseControl As Control = MenuNew_Clear(Me, Me)
+
+        '設定読込
+        Dim WrkStr As String = ""
+        Try
+            WrkStr = System.IO.File.ReadAllText(FileName, System.Text.Encoding.GetEncoding("Shift_JIS"))
+        Catch ex As Exception
+            MsgBox(ex.ToString)
+            MsgBox("設定読込に失敗しました。")
+            Exit Sub
+        End Try
+
+        Dim SettingList() As String = Split(WrkStr, vbCrLf)
+        For SettingIdx As Integer = 0 To SettingList.Count - 1
+            SettingIdx = LoadMPSETCall(SettingList, SettingIdx, BaseControl)
+        Next
+
+    End Sub
+    Private Function LoadMPSETCall(ByVal SettingList() As String, ByVal SettingIdx As Integer, ByVal BaseControl As Control) As Integer
+
+        If SettingList(SettingIdx) = "" Then
+            Return SettingIdx
+        End If
+
+        Dim SettingSingle() As String = Split(SettingList(SettingIdx), vbTab)
+
+        If SettingSingle(0) = "MultiContainer" Then
+
+            Dim WrkMultiContainer As MultiContainer
+
+            If SettingSingle(1) = "Horizontal" Then
+                WrkMultiContainer = Separate(BaseControl, True)
+            Else
+                WrkMultiContainer = Separate(BaseControl, False)
+            End If
+
+            WrkMultiContainer.SplitterDistance = CInt(SettingSingle(2))
+
+            For Each WrkControl As Control In WrkMultiContainer.Panel1.Controls
+                If TypeOf WrkControl Is ViewSet Then
+                    SettingIdx = LoadMPSETCall(SettingList, SettingIdx + 1, WrkControl)
+                    Exit For
+                End If
+            Next
+            For Each WrkControl As Control In WrkMultiContainer.Panel2.Controls
+                If TypeOf WrkControl Is ViewSet Then
+                    SettingIdx = LoadMPSETCall(SettingList, SettingIdx + 1, WrkControl)
+                    Exit For
+                End If
+            Next
+
+        End If
+
+        If SettingSingle(0) = "ViewSet" Then
+
+            Call LoadMPSETViewSet(BaseControl, SettingSingle(1), SettingSingle(2))
+
+        End If
+
+        If SettingSingle(0) = "MainSizeWidth" Then
+            Me.Width = CInt(SettingSingle(1))
+        End If
+
+        If SettingSingle(0) = "MainSizeHeight" Then
+            Me.Height = CInt(SettingSingle(1))
+        End If
+
+        Return SettingIdx
+    End Function
+    Private Sub LoadMPSETViewSet(ByVal BaseControl As Control, ByVal SetViewTime As String, ByVal SetFileName As String)
+
+        If TypeOf BaseControl Is ViewSet Then
+            Dim WrkViewSet As ViewSet = DirectCast(BaseControl, ViewSet)
+
+            WrkViewSet.Setting_Obj.FileName = SetFileName
+
+            Dim WrkViewTime As Integer
+            WrkViewTime = CInt(SetViewTime)
+            WrkViewSet.Setting_Obj.ViewTime = WrkViewTime
+
+            Call WrkViewSet.ReView()
+        End If
 
     End Sub
 
@@ -273,9 +374,11 @@ Public Class Form1
             WrkStreamWriter.WriteLine(WrkStr)
             WrkStreamWriter.Close()
         Catch ex As System.IO.FileNotFoundException
+            Exit Sub
         Catch ex As Exception
             MsgBox(ex.ToString)
-            MsgBox("履歴読込に失敗しました。")
+            MsgBox("履歴書込に失敗しました。")
+            Exit Sub
         End Try
 
     End Sub
@@ -284,21 +387,20 @@ Public Class Form1
     Private Sub FileLogLoad()
 
         'ファイルアクセスログ取得
-        Dim LoadEnable As Boolean = False
         Dim WrkStr As String = ""
         Try
             WrkStr = System.IO.File.ReadAllText(FileLoadLogFileName(), System.Text.Encoding.GetEncoding("Shift_JIS"))
-            LoadEnable = True
         Catch ex As System.IO.FileNotFoundException
+            Exit Sub
         Catch ex As Exception
             MsgBox(ex.ToString)
             MsgBox("履歴読込に失敗しました。")
+            Exit Sub
         End Try
 
-        If LoadEnable = True Then
-            Call WrkMenuFileAccessHistory.SetHistory(MenuLoad, WrkStr)
-        End If
-
+        '履歴情報セット/一括作成
+        Call WrkMenuFileAccessHistory.SetHistory(MenuLoad, WrkStr)
+        
     End Sub
 
     'ファイルアクセスログのファイル名取得
@@ -312,9 +414,44 @@ Public Class Form1
         Return WrkExeName & ".conf.txt"
     End Function
 
+    '新規
+    Private Sub MenuNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuNew.Click
+
+        '現在の設定を削除
+        Call MenuNew_Clear(Me, Me)
+
+    End Sub
+    Private Function MenuNew_Clear(ByVal RootControl As Control, ByVal BaseControl As Control) As Control
+
+        For Each WrkControl As Control In BaseControl.Controls
+
+            'Debug.WriteLine(TypeName(WrkControl))
+
+            If TypeOf WrkControl Is ViewSet Then
+                RootControl.Controls.Add(WrkControl)
+                Return WrkControl
+            End If
+
+            If TypeOf WrkControl Is SplitterPanel _
+            Or TypeOf WrkControl Is MultiContainer Then
+
+                '再帰的呼び出し
+                Dim RetControl As Control = MenuNew_Clear(RootControl, WrkControl)
+
+                If TypeOf WrkControl Is MultiContainer Then
+                    WrkControl.Dispose()
+                End If
+
+                Return RetControl
+            End If
+
+        Next
+
+        Return Nothing
+    End Function
+
     '終了
     Private Sub MenuExit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuExit.Click
         Me.Dispose()
     End Sub
-
 End Class
