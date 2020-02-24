@@ -21,3 +21,4 @@ C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPla
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.ViewPictureTest.resources
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.IntervalNextTest.resources
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.SettingForm.resources
+C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.MenuFileAccessHistoryTest.resources

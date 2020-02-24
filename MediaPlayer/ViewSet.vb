@@ -33,7 +33,9 @@ Public Class ViewSet
 
         Erase FileList
 
-        FileList = System.IO.Directory.GetFiles(System.IO.Path.GetDirectoryName(Setting_Obj.FileName), System.IO.Path.GetFileName(Setting_Obj.FileName), System.IO.SearchOption.AllDirectories)
+        If Not Setting_Obj.FileName Is Nothing Then
+            FileList = System.IO.Directory.GetFiles(System.IO.Path.GetDirectoryName(Setting_Obj.FileName), System.IO.Path.GetFileName(Setting_Obj.FileName), System.IO.SearchOption.AllDirectories)
+        End If
 
         FileIdx = 0
         Call ExecSub()

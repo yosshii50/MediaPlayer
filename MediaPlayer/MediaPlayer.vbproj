@@ -80,6 +80,13 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="IntervalNext_Cls.vb" />
+    <Compile Include="MenuFileAccessHistory.vb" />
+    <Compile Include="MenuFileAccessHistoryTest.Designer.vb">
+      <DependentUpon>MenuFileAccessHistoryTest.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MenuFileAccessHistoryTest.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MultiContainer.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -139,6 +146,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuFileAccessHistoryTest.resx">
+      <DependentUpon>MenuFileAccessHistoryTest.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MultiContainerTest.resx">
       <DependentUpon>MultiContainerTest.vb</DependentUpon>
