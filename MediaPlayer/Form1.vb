@@ -211,6 +211,13 @@ Public Class Form1
 
         'ファイルアクセスログ取得
         Dim WrkStr As String = ""
+
+        If System.IO.File.Exists(FileLoadLogFileName()) = False Then
+            'ファイルオープン時にエラー処理を入れているが、エラー発生として記録されるため
+            '先に存在確認をしておく
+            Exit Sub
+        End If
+
         Try
             WrkStr = System.IO.File.ReadAllText(FileLoadLogFileName(), System.Text.Encoding.GetEncoding("Shift_JIS"))
         Catch ex As System.IO.FileNotFoundException
@@ -268,8 +275,22 @@ Public Class Form1
         Return WrkPicBox
     End Function
 
+    'バージョン情報
+    Private Sub MenuHelpVersionInfo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuHelpVersionInfo.Click
+
+        Dim VersionInfo_Obj As New VersionInfo
+        VersionInfo_Obj.OpenFormDirect()
+
+    End Sub
+
     '終了
     Private Sub MenuExit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuExit.Click
+        Me.Close()
         Me.Dispose()
     End Sub
+
+
+
+
+
 End Class

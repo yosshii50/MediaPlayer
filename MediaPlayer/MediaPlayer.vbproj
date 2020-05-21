@@ -118,6 +118,12 @@
     <Compile Include="IntervalNextTest.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="VersionInfo.Designer.vb">
+      <DependentUpon>VersionInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="VersionInfo.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ViewPictureTest.Designer.vb">
       <DependentUpon>ViewPictureTest.vb</DependentUpon>
     </Compile>
@@ -162,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="IntervalNextTest.resx">
       <DependentUpon>IntervalNextTest.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VersionInfo.resx">
+      <DependentUpon>VersionInfo.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewPictureTest.resx">
       <DependentUpon>ViewPictureTest.vb</DependentUpon>
