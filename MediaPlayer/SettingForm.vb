@@ -28,13 +28,11 @@ Public Class SettingForm
         BaseSetting.ViewTime = CDec(TextBox2.Text)
 
         RetCode = True
-        Me.Close()
         Me.Dispose()
     End Sub
 
     'キャンセル
     Private Sub CancelBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CancelBtn.Click
-        Me.Close()
         Me.Dispose()
     End Sub
 

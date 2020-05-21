@@ -5,7 +5,6 @@ Public Class ViewPicture
     Inherits PictureBox
 
     Private LoadImage As Bitmap '読み込んでいるイメージデータ
-    Private PlayVLCCtl As New AxAXVLC.AxVLCPlugin2 'VLC再生
 
     Public Sub New()
         'Me.BackColor = Color.Black
@@ -21,55 +20,12 @@ Public Class ViewPicture
         End Get
     End Property
 
-    '現在表示している動画のファイル名
-    Private _NowPlayFile As String
-    Public ReadOnly Property NowPlayFile() As String
-        Get
-            Return _NowPlayFile
-        End Get
-    End Property
-
     Public Sub SizeChangedStart()
         AddHandler Me.SizeChanged, AddressOf PicBox_SizeChanged
     End Sub
     Public Sub SizeChangedStop()
         RemoveHandler Me.SizeChanged, AddressOf PicBox_SizeChanged
     End Sub
-
-    '動画の再生
-    Public Function PlayFile(ByVal SetPlsyFileName As String) As Boolean
-
-        If SetPlsyFileName Is Nothing Then
-            Return True
-        End If
-
-        _NowPlayFile = SetPlsyFileName
-
-        PlayVLCCtl.ContextMenuStrip = Me.ContextMenuStrip
-        PlayVLCCtl.Location = New Point(0, 0)
-        Call PlayVLCResize(Me)
-
-        'フォームに追加する
-        Me.Controls.Add(PlayVLCCtl)
-
-        'AxVLCPlugin2View.playlist.items.clear()
-        PlayVLCCtl.AutoLoop = True
-        PlayVLCCtl.playlist.add(New Uri(SetPlsyFileName).AbsoluteUri)
-        PlayVLCCtl.playlist.play()
-
-        'Try
-        '    LoadImage = New Bitmap(_NowPlayFile)
-        'Catch ex As Exception
-        '    Return False
-        'End Try
-
-        'Call ViewPix()
-
-        Call SizeChangedStop()
-        Call SizeChangedStart()
-
-        Return True
-    End Function
 
     Public Function LoadFile(ByVal SetViewFileName As String) As Boolean
         Return LoadFile(SetViewFileName, True)
@@ -89,7 +45,7 @@ Public Class ViewPicture
             Return False
         End Try
 
-        Call ViewPix(Me, LoadImage)
+        Call ViewPix()
 
         If IsAutoRefresh = True Then
             Me.Refresh()
@@ -102,26 +58,13 @@ Public Class ViewPicture
     End Function
 
     Private Sub PicBox_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs)
-        Call ViewPix(Me, LoadImage)
-        Call PlayVLCResize(Me)
-    End Sub
-
-    Private Sub PlayVLCResize(ByRef ParentPictureBox As PictureBox)
-
-        '安全装置
-        If ParentPictureBox.Width = 0 Then
-            Exit Sub
-        End If
-        If ParentPictureBox.Height = 0 Then
-            Exit Sub
-        End If
-
-        PlayVLCCtl.Width = ParentPictureBox.Width
-        PlayVLCCtl.Height = ParentPictureBox.Height
-
+        Call ViewPix()
     End Sub
 
     '画面に表示
+    Private Sub ViewPix()
+        Call ViewPix(Me, LoadImage)
+    End Sub
     Private Sub ViewPix(ByRef ViewPictureBox As PictureBox, ByRef BaseImageBITMAP As Bitmap)
 
         Dim TmpBITMAP As Bitmap '描画用イメージデータ
@@ -194,4 +137,5 @@ Public Class ViewPicture
 
         Return WrkPosition
     End Function
+
 End Class
