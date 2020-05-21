@@ -268,8 +268,22 @@ Public Class Form1
         Return WrkPicBox
     End Function
 
+    'バージョン情報
+    Private Sub MenuHelpVersionInfo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuHelpVersionInfo.Click
+
+        Dim VersionInfo_Obj As New VersionInfo
+        VersionInfo_Obj.OpenFormDirect()
+
+    End Sub
+
     '終了
     Private Sub MenuExit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuExit.Click
+        Me.Close()
         Me.Dispose()
     End Sub
+
+
+
+
+
 End Class
