@@ -5,6 +5,7 @@ Public Class ViewPicture
     Inherits PictureBox
 
     Private LoadImage As Bitmap '読み込んでいるイメージデータ
+    Private PlayPanel As New System.Windows.Forms.Panel '右クリックを使えるようにするため必要
     Private PlayVLCCtl As New AxAXVLC.AxVLCPlugin2 'VLC再生
 
     Public Sub New()
@@ -45,17 +46,20 @@ Public Class ViewPicture
 
         _NowPlayFile = SetPlsyFileName
 
-        PlayVLCCtl.ContextMenuStrip = Me.ContextMenuStrip
+        PlayPanel.Location = New Point(0, 0)
+        PlayPanel.Enabled = False
         PlayVLCCtl.Location = New Point(0, 0)
-        Call PlayVLCResize(Me)
 
         'フォームに追加する
-        Me.Controls.Add(PlayVLCCtl)
+        Me.Controls.Add(PlayPanel)
+        PlayPanel.Controls.Add(PlayVLCCtl)
 
         'AxVLCPlugin2View.playlist.items.clear()
         PlayVLCCtl.AutoLoop = True
         PlayVLCCtl.playlist.add(New Uri(SetPlsyFileName).AbsoluteUri)
         PlayVLCCtl.playlist.play()
+
+        Call PlayVLCResize(Me)
 
         'Try
         '    LoadImage = New Bitmap(_NowPlayFile)
@@ -116,6 +120,8 @@ Public Class ViewPicture
             Exit Sub
         End If
 
+        PlayPanel.Width = ParentPictureBox.Width
+        PlayPanel.Height = ParentPictureBox.Height
         PlayVLCCtl.Width = ParentPictureBox.Width
         PlayVLCCtl.Height = ParentPictureBox.Height
 

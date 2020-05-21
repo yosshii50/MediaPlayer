@@ -10,6 +10,8 @@ Public Class ViewSet
     Public Sub SettingCopy(ByVal BaseViewSet As ViewSet)
         Me.Setting_Obj.FileName = BaseViewSet.Setting_Obj.FileName
         Me.Setting_Obj.ViewTime = BaseViewSet.Setting_Obj.ViewTime
+        Me.Setting_Obj.ViewType = BaseViewSet.Setting_Obj.ViewType
+        Me.Setting_Obj.MovieName = BaseViewSet.Setting_Obj.MovieName
     End Sub
 
     Public Sub OpenSettingFormDirect()
@@ -32,6 +34,13 @@ Public Class ViewSet
     Public Sub ReView()
 
         Erase FileList
+
+        If Setting_Obj.ViewType = Setting_Cls.ViewType_Enum.Movie Then
+
+            Me.PlayFile(Setting_Obj.MovieName)
+
+            Exit Sub
+        End If
 
         If Not Setting_Obj.FileName Is Nothing Then
             FileList = System.IO.Directory.GetFiles(System.IO.Path.GetDirectoryName(Setting_Obj.FileName), System.IO.Path.GetFileName(Setting_Obj.FileName), System.IO.SearchOption.AllDirectories)

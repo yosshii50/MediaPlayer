@@ -36,6 +36,12 @@
     End Sub
 
     Private Sub Button5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button5.Click
+        AxVLCPlugin21.AutoLoop = True
+        AxVLCPlugin21.playlist.add(New Uri("D:\!Delete\SAMPLE\MOV.mp4").AbsoluteUri)
+        AxVLCPlugin21.playlist.play()
+    End Sub
+
+    Private Sub Button7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button7.Click
         ViewPicture1.PlayFile("D:\!Delete\SAMPLE\MOV.mp4")
     End Sub
 End Class

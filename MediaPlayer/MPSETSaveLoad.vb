@@ -94,7 +94,10 @@ Public Module MPSETSaveLoad
         Return SaveStr
     End Function
     Private Function SaveMPSETSingle(ByVal WrkViewSet As ViewSet) As String
-        Return "ViewSet" & vbTab & WrkViewSet.Setting_Obj.ViewTime & vbTab & WrkViewSet.Setting_Obj.FileName & vbCrLf
+        Return "ViewSet" & vbTab & WrkViewSet.Setting_Obj.ViewTime _
+                         & vbTab & WrkViewSet.Setting_Obj.FileName _
+                         & vbTab & WrkViewSet.Setting_Obj.ViewType _
+                         & vbTab & WrkViewSet.Setting_Obj.MovieName & vbCrLf
     End Function
 
     Delegate Function MenuNew_Clear_Dlg() As Control
@@ -133,6 +136,11 @@ Public Module MPSETSaveLoad
 
         '現在の設定を削除
         Dim BaseControl As Control = MenuNew_Clear()
+
+        If System.IO.File.Exists(FileName) = False Then
+            MsgBox("設定ファイルが見つかりません。")
+            Exit Sub
+        End If
 
         '設定読込
         Dim WrkStr As String = ""
@@ -187,7 +195,9 @@ Public Module MPSETSaveLoad
 
         If SettingSingle(0) = "ViewSet" Then
 
-            Call LoadMPSETViewSet(BaseControl, SettingSingle(1), SettingSingle(2))
+            ReDim Preserve SettingSingle(4)
+
+            Call LoadMPSETViewSet(BaseControl, SettingSingle(1), SettingSingle(2), SettingSingle(3), SettingSingle(4))
 
         End If
 
@@ -201,7 +211,7 @@ Public Module MPSETSaveLoad
 
         Return SettingIdx
     End Function
-    Private Sub LoadMPSETViewSet(ByVal BaseControl As Control, ByVal SetViewTime As String, ByVal SetFileName As String)
+    Private Sub LoadMPSETViewSet(ByVal BaseControl As Control, ByVal SetViewTime As String, ByVal SetFileName As String, ByVal SetViewType As String, ByVal SetMovieName As String)
 
         If TypeOf BaseControl Is ViewSet Then
             Dim WrkViewSet As ViewSet = DirectCast(BaseControl, ViewSet)
@@ -211,6 +221,14 @@ Public Module MPSETSaveLoad
             Dim WrkViewTime As Decimal
             WrkViewTime = CDec(SetViewTime)
             WrkViewSet.Setting_Obj.ViewTime = WrkViewTime
+
+            If Setting_Cls.ViewType_Enum.Picture = CDbl(SetViewType) Then
+                WrkViewSet.Setting_Obj.ViewType = Setting_Cls.ViewType_Enum.Picture
+            ElseIf Setting_Cls.ViewType_Enum.Movie = CDbl(SetViewType) Then
+                WrkViewSet.Setting_Obj.ViewType = Setting_Cls.ViewType_Enum.Movie
+            End If
+
+            WrkViewSet.Setting_Obj.MovieName = SetMovieName
 
             Call WrkViewSet.ReView()
         End If
