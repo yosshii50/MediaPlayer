@@ -23,13 +23,13 @@ Partial Class ViewPictureTest
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Button5 = New System.Windows.Forms.Button()
         Me.Button4 = New System.Windows.Forms.Button()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.ViewPicture1 = New MediaPlayer.ViewPicture()
-        Me.Button5 = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.ViewPicture1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -47,6 +47,15 @@ Partial Class ViewPictureTest
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(816, 50)
         Me.Panel1.TabIndex = 0
+        '
+        'Button5
+        '
+        Me.Button5.Location = New System.Drawing.Point(476, 12)
+        Me.Button5.Name = "Button5"
+        Me.Button5.Size = New System.Drawing.Size(110, 26)
+        Me.Button5.TabIndex = 4
+        Me.Button5.Text = "動画再生2"
+        Me.Button5.UseVisualStyleBackColor = True
         '
         'Button4
         '
@@ -102,15 +111,6 @@ Partial Class ViewPictureTest
         Me.ViewPicture1.Size = New System.Drawing.Size(816, 445)
         Me.ViewPicture1.TabIndex = 0
         Me.ViewPicture1.TabStop = False
-        '
-        'Button5
-        '
-        Me.Button5.Location = New System.Drawing.Point(476, 12)
-        Me.Button5.Name = "Button5"
-        Me.Button5.Size = New System.Drawing.Size(110, 26)
-        Me.Button5.TabIndex = 4
-        Me.Button5.Text = "動画再生2"
-        Me.Button5.UseVisualStyleBackColor = True
         '
         'ViewPictureTest
         '
