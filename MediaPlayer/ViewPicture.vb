@@ -5,8 +5,7 @@ Public Class ViewPicture
     Inherits PictureBox
 
     Private LoadImage As Bitmap '読み込んでいるイメージデータ
-    'Private PlayVLCCtl As New AxAXVLC.AxVLCPlugin2 'VLC再生
-    Private PlayVLCCtl As New PictureBox  'VLC再生
+    Private PlayVLCCtl As New AxAXVLC.AxVLCPlugin2 'VLC再生
 
     Public Sub New()
         'Me.BackColor = Color.Black
@@ -54,9 +53,9 @@ Public Class ViewPicture
         Me.Controls.Add(PlayVLCCtl)
 
         'AxVLCPlugin2View.playlist.items.clear()
-        'PlayVLCCtl.AutoLoop = True
-        'PlayVLCCtl.playlist.add(New Uri(SetPlsyFileName).AbsoluteUri)
-        'PlayVLCCtl.playlist.play()
+        PlayVLCCtl.AutoLoop = True
+        PlayVLCCtl.playlist.add(New Uri(SetPlsyFileName).AbsoluteUri)
+        PlayVLCCtl.playlist.play()
 
         'Try
         '    LoadImage = New Bitmap(_NowPlayFile)

@@ -1,6 +1,11 @@
+C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\Interop.AXVLC.dll
+C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\AxInterop.AXVLC.dll
+C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.vbproj.ResolveComReference.cache
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\bin\Debug\MediaPlayer.exe
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\bin\Debug\MediaPlayer.pdb
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\bin\Debug\MediaPlayer.xml
+C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\bin\Debug\Interop.AXVLC.dll
+C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\bin\Debug\AxInterop.AXVLC.dll
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.Form1.resources
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.MenuFileAccessHistoryTest.resources
 C:\Users\yagi_yo\Documents\GitHub\MediaPlayer\MediaPlayer\obj\x86\Debug\MediaPlayer.MultiContainerTest.resources
